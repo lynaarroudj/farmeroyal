@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="utilisateurs" />
+        <module name="banque-commerce" />
+        <module name="production-temps" />
+        <module name="meteo-saisons" />
+        <module name="ressources-inventaire" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="banque-commerce" options="-parameters" />
+      <module name="meteo-saisons" options="-parameters" />
+      <module name="production-temps" options="-parameters" />
+      <module name="ressources-inventaire" options="-parameters" />
+      <module name="utilisateurs" options="-parameters" />
+    </option>
+  </component>
+</project>
