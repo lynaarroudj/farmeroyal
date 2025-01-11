@@ -1,0 +1,31 @@
+package ressources;
+
+import dao.CityDAO;
+import entity.City;
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+@Path("/City")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class CityResource {
+
+    @Inject
+    CityDAO cityDAO;
+
+    @POST
+    @Path("/add")
+    public Response addCity(City city) {
+        cityDAO.saveCity(city);
+        return Response.ok("City added successfully").build();
+    }
+
+    @GET
+    @Path("/all")
+    public Response getAllCities() {
+        return Response.ok(cityDAO.getAllCities()).build();
+    }
+}

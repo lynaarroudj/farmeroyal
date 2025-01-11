@@ -1,0 +1,39 @@
+package dao;
+
+import entity.ville;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
+import java.util.List;
+
+@ApplicationScoped
+public class CityDAO {
+
+    @Inject
+    private EntityManager em;
+
+    public void saveCity(City city) { //ca pour ajouter ville dans bd
+        em.persist(city);
+    }
+
+    
+    public List<City> getAllCities() {
+        TypedQuery<City> query = em.createQuery("SELECT c FROM City c", City.class);
+        return query.getResultList();
+    }
+
+   
+    public String getSeasonForCityAndMonth(String cityName, int month) {
+        TypedQuery<String> query = em.createQuery(
+                "SELECT c.season FROM City c WHERE c.name = :name AND :month BETWEEN c.startMonth AND c.endMonth",
+                String.class
+        );// recuperer saison d'une ville
+        query.setParameter("name", cityName);
+        query.setParameter("month", month);
+
+        List<String> results = query.getResultList();
+        return results.isEmpty() ? null : results.get(0);
+    }
+}

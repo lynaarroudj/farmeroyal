@@ -1,0 +1,31 @@
+package dao;
+
+import entity.Weather;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@ApplicationScoped
+public class WeatherDAO {
+
+    @Inject
+    private EntityManager em;
+
+    // Sauvegarde de la meteo en bas
+    public void saveWeather(Weather weather) {
+        em.persist(weather);
+    }
+
+    // Récupére donnée meteo d'une ville donné
+    public List<Weather> getWeatherByCityAndDate(String cityName, LocalDate date) {
+        TypedQuery<Weather> query = em.createQuery(
+                "SELECT w FROM Weather w WHERE w.city.name = :cityName AND w.date = :date", Weather.class);
+        query.setParameter("cityName", cityName);
+        query.setParameter("date", date);
+        return query.getResultList();
+    }
+}

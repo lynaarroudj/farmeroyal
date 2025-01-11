@@ -1,0 +1,1 @@
+public record SeasonDTO(String nom, double fertilitédusol, int durée) {}

@@ -1,0 +1,25 @@
+package ressources;
+
+import service.WeatherService;
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+import java.time.LocalDate;
+
+@Path("/weather")
+@Produces(MediaType.APPLICATION_JSON)
+public class WeatherResource {
+
+    @Inject
+    private WeatherService weatherService;
+
+    @GET
+    @Path("/generate/{city}")
+    public Response generateWeather(@PathParam("city") String cityName) {
+        LocalDate today = LocalDate.now();
+        return Response.ok(weatherService.generateWeatherForCity(cityName, today)).build();
+    }
+}
