@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import Utils.DateUtils;
+import exception.SeasonValidException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,25 +15,28 @@ import java.util.stream.Collectors;
 public class CitySeasonService {
 
     @Inject
-    private CitySeasonDao citySeasonDAO;
+    private CitySeasonDao citySeasonDao;
 
     @Transactional
-    public Long saveCitySeason(CitySeasonDto citySeasonDTO) {
+    public Long saveCitySeason(CitySeasonDto citySeasonDto) {
+        // Valider le nom de la saison
+        SeasonValidException.validateSeasonName(citySeasonDto.seasonName());
+
         CitySeason citySeason = new CitySeason();
-        citySeason.setCityName(citySeasonDTO.cityName());
+        citySeason.setCityName(citySeasonDto.cityName());
 
         // Utilisation de DateUtils pour les dates
-        citySeason.setSeasonStart(DateUtils.parseWithDefaultYear(citySeasonDTO.seasonStart()));
-        citySeason.setSeasonEnd(DateUtils.parseWithDefaultYear(citySeasonDTO.seasonEnd()));
+        citySeason.setSeasonStart(DateUtils.parseWithDefaultYear(citySeasonDto.seasonStart()));
+        citySeason.setSeasonEnd(DateUtils.parseWithDefaultYear(citySeasonDto.seasonEnd()));
 
-        citySeason.setSeasonName(citySeasonDTO.seasonName());
+        citySeason.setSeasonName(citySeasonDto.seasonName());
 
-        citySeasonDAO.saveCitySeason(citySeason);
+        citySeasonDao.saveCitySeason(citySeason);
         return citySeason.getId();
     }
 
     public CitySeasonDto getCitySeasonById(Long id) {
-        CitySeason citySeason = citySeasonDAO.getById(id);
+        CitySeason citySeason = citySeasonDao.getById(id);
         if (citySeason == null) {
             return null;
         }
@@ -45,7 +49,7 @@ public class CitySeasonService {
     }
 
     public List<CitySeasonDto> getCitySeasonsByCityName(String cityName) {
-        List<CitySeason> citySeasons = citySeasonDAO.getByCityName(cityName);
+        List<CitySeason> citySeasons = citySeasonDao.getByCityName(cityName);
         return citySeasons.stream()
                 .map(citySeason -> new CitySeasonDto(
                         citySeason.getCityName(),
@@ -57,7 +61,7 @@ public class CitySeasonService {
     }
 
     public List<CitySeasonDto> getCitySeasonsBySeasonName(String seasonName) {
-        List<CitySeason> citySeasons = citySeasonDAO.getBySeasonName(seasonName);
+        List<CitySeason> citySeasons = citySeasonDao.getBySeasonName(seasonName);
         return citySeasons.stream()
                 .map(citySeason -> new CitySeasonDto(
                         citySeason.getCityName(),
