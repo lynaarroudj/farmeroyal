@@ -28,6 +28,8 @@ public class CitySeason {
 
     private double snowProbability;
 
+    private double fertilityRate = 0; // Par défaut
+
     // Getters et Setters
     public Long getId() {
         return id;
@@ -99,5 +101,13 @@ public class CitySeason {
 
     public void setSnowProbability(double snowProbability) {
         this.snowProbability = snowProbability;
+    }
+
+    public double getFertilityRate() {
+        return fertilityRate;
+    }
+
+    public void setFertilityRate(double fertilityRate) {
+        this.fertilityRate = fertilityRate;
     }
 }

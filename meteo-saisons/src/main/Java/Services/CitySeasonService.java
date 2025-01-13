@@ -10,7 +10,6 @@ import Utils.DateUtils;
 import exception.SeasonValidException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class CitySeasonService {
@@ -40,25 +39,37 @@ public class CitySeasonService {
     public String getWeatherForCity(String cityName, LocalDate date) {
         List<CitySeason> citySeasons = citySeasonDao.getByCityName(cityName);
 
+        // Trouver la saison correspondant à la date
         CitySeason currentSeason = citySeasons.stream()
                 .filter(season -> !date.isBefore(season.getSeasonStart()) && !date.isAfter(season.getSeasonEnd()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Aucune saison trouvée pour la date donnée."));
 
+        // Générer une température aléatoire
         int temperature = currentSeason.getMinTemperature() +
                 (int) (Math.random() * (currentSeason.getMaxTemperature() - currentSeason.getMinTemperature() + 1));
 
+        // Déterminer les précipitations
         String precipitation;
         double randomValue = Math.random();
         if (randomValue < currentSeason.getRainProbability()) {
             precipitation = "pluie";
+            currentSeason.setFertilityRate(currentSeason.getFertilityRate() + 2); // Fertilité augmentée de +2
         } else if (randomValue < currentSeason.getRainProbability() + currentSeason.getSnowProbability()) {
             precipitation = "neige";
+            currentSeason.setFertilityRate(currentSeason.getFertilityRate() - 3); // Fertilité diminuée de -3
+        } else if (temperature >= 35 && temperature <= 45) {
+            precipitation = "sécheresse";
+            currentSeason.setFertilityRate(currentSeason.getFertilityRate() - 2); // Fertilité diminuée de -2
         } else {
             precipitation = "ciel dégagé";
         }
 
-        return String.format("Météo pour %s le %s : %d°C, %s",
-                cityName, date, temperature, precipitation);
+
+        //currentSeason.setFertilityRate(Math.max(0, Math.min(1, currentSeason.getFertilityRate())));
+
+        // Retourner les informations météo
+        return String.format("Météo pour %s le %s : %d°C, %s. Fertilité : %.2f",
+                cityName, date, temperature, precipitation, currentSeason.getFertilityRate());
     }
 }

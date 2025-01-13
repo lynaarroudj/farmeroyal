@@ -8,7 +8,6 @@ import jakarta.ws.rs.core.Response;
 import Services.CitySeasonService;
 import Utils.DateUtils;
 
-
 import java.time.LocalDate;
 
 @Path("city-seasons")
