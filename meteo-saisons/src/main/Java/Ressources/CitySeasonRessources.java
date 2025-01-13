@@ -34,7 +34,6 @@ public class CitySeasonRessources {
                 throw new IllegalArgumentException("Le format de la date est invalide. Utilisez le format : dd/MM");
             }
 
-            // Parsing de la date avec validation
             LocalDate parsedDate = DateUtils.parseWithDefaultYear(date);
 
             // Génération des conditions météo
