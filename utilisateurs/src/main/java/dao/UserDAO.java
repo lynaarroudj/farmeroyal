@@ -4,6 +4,7 @@ import entity.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 
 @ApplicationScoped
 public class UserDAO {
@@ -23,5 +24,15 @@ public class UserDAO {
 
     public User getById(Long id) {
         return em.find(User.class, id);
+    }
+
+    public User findByEmail(String email) {
+        try {
+            return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

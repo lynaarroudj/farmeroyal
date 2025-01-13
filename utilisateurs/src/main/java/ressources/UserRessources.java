@@ -1,6 +1,7 @@
 package ressources;
 
 import dto.UserDTO;
+import dto.AuthDTO;
 import exception.InvalidException;
 import exception.UserAlreadyExistWithTheSameEmail;
 import jakarta.inject.Inject;
@@ -39,6 +40,17 @@ public class UserRessources { //ressources jakarta rest
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build());
         } catch (UserAlreadyExistWithTheSameEmail e) {
             throw new WebApplicationException(Response.status(Response.Status.CONFLICT).build());
+        }
+    }
+
+    @POST
+    @Path("/login")
+    public Response login(AuthDTO.LoginReq request) {
+        try {
+            AuthDTO.LoginResp response = userService.authenticateUser(request);
+            return Response.ok(response).build();
+        } catch (InvalidException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build();
         }
     }
 
