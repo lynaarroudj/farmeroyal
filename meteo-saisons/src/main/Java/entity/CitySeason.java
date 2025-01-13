@@ -63,7 +63,7 @@ public class CitySeason {
         this.seasonEnd = seasonEnd;
     }
 
-    public String getSeasonName() {
+    public String  getSeasonName() {
         return seasonName;
     }
 
