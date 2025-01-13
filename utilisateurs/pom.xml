@@ -37,6 +37,35 @@
     </dependencyManagement>
 
     <dependencies>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.beryx</groupId>
+            <artifactId>text-io</artifactId>
+            <version>3.4.1</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.camel.quarkus</groupId>
             <artifactId>camel-quarkus-file</artifactId>
@@ -132,7 +161,6 @@
                 <configuration>
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                        <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -151,7 +179,6 @@
                     <systemPropertyVariables>
                         <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                        <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
