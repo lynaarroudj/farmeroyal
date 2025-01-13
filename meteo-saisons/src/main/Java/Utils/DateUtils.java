@@ -10,21 +10,23 @@ public class DateUtils {
 
     public static LocalDate parseWithDefaultYear(String date) {
         try {
-            // Extraire jour et mois avec le formatteur "dd/MM"
+            // Validation du format "dd/MM"
             String[] parts = date.split("/");
             if (parts.length != 2) {
-                throw new DateTimeParseException("Invalid date format", date, 0);
+                throw new IllegalArgumentException("Le format de la date est invalide. Format attendu : dd/MM");
             }
 
-            int dayOfMonth = Integer.parseInt(parts[0]);
+            // Extraction des valeurs
+            int day = Integer.parseInt(parts[0]);
             int month = Integer.parseInt(parts[1]);
-            int year = LocalDate.now().getYear(); // Année actuelle
+            int year = LocalDate.now().getYear(); // Utilise l'année actuelle
 
-            // Créer une date complète avec jour, mois et année actuelle
-            return LocalDate.of(year, month, dayOfMonth);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid date format. Expected format: dd/MM", e);
+            // Construction de la date
+            return LocalDate.of(year, month, day);
+        } catch (DateTimeParseException | IllegalArgumentException e) {
+            throw new IllegalArgumentException("Erreur de parsing de la date. Format attendu : dd/MM", e);
         }
     }
 }
+
 

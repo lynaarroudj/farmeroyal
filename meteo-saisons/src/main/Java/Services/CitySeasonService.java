@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import Utils.DateUtils;
 import exception.SeasonValidException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,51 +25,40 @@ public class CitySeasonService {
 
         CitySeason citySeason = new CitySeason();
         citySeason.setCityName(citySeasonDto.cityName());
-
-        // Utilisation de DateUtils pour les dates
         citySeason.setSeasonStart(DateUtils.parseWithDefaultYear(citySeasonDto.seasonStart()));
         citySeason.setSeasonEnd(DateUtils.parseWithDefaultYear(citySeasonDto.seasonEnd()));
-
         citySeason.setSeasonName(citySeasonDto.seasonName());
+        citySeason.setMinTemperature(citySeasonDto.minTemperature());
+        citySeason.setMaxTemperature(citySeasonDto.maxTemperature());
+        citySeason.setRainProbability(citySeasonDto.rainProbability());
+        citySeason.setSnowProbability(citySeasonDto.snowProbability());
 
         citySeasonDao.saveCitySeason(citySeason);
         return citySeason.getId();
     }
 
-    public CitySeasonDto getCitySeasonById(Long id) {
-        CitySeason citySeason = citySeasonDao.getById(id);
-        if (citySeason == null) {
-            return null;
-        }
-        return new CitySeasonDto(
-                citySeason.getCityName(),
-                citySeason.getSeasonStart().toString(),
-                citySeason.getSeasonEnd().toString(),
-                citySeason.getSeasonName()
-        );
-    }
-
-    public List<CitySeasonDto> getCitySeasonsByCityName(String cityName) {
+    public String getWeatherForCity(String cityName, LocalDate date) {
         List<CitySeason> citySeasons = citySeasonDao.getByCityName(cityName);
-        return citySeasons.stream()
-                .map(citySeason -> new CitySeasonDto(
-                        citySeason.getCityName(),
-                        citySeason.getSeasonStart().toString(),
-                        citySeason.getSeasonEnd().toString(),
-                        citySeason.getSeasonName()
-                ))
-                .collect(Collectors.toList());
-    }
 
-    public List<CitySeasonDto> getCitySeasonsBySeasonName(String seasonName) {
-        List<CitySeason> citySeasons = citySeasonDao.getBySeasonName(seasonName);
-        return citySeasons.stream()
-                .map(citySeason -> new CitySeasonDto(
-                        citySeason.getCityName(),
-                        citySeason.getSeasonStart().toString(),
-                        citySeason.getSeasonEnd().toString(),
-                        citySeason.getSeasonName()
-                ))
-                .collect(Collectors.toList());
+        CitySeason currentSeason = citySeasons.stream()
+                .filter(season -> !date.isBefore(season.getSeasonStart()) && !date.isAfter(season.getSeasonEnd()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Aucune saison trouvée pour la date donnée."));
+
+        int temperature = currentSeason.getMinTemperature() +
+                (int) (Math.random() * (currentSeason.getMaxTemperature() - currentSeason.getMinTemperature() + 1));
+
+        String precipitation;
+        double randomValue = Math.random();
+        if (randomValue < currentSeason.getRainProbability()) {
+            precipitation = "pluie";
+        } else if (randomValue < currentSeason.getRainProbability() + currentSeason.getSnowProbability()) {
+            precipitation = "neige";
+        } else {
+            precipitation = "ciel dégagé";
+        }
+
+        return String.format("Météo pour %s le %s : %d°C, %s",
+                cityName, date, temperature, precipitation);
     }
 }

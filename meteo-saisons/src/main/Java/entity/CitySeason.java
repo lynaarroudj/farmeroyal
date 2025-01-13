@@ -20,7 +20,15 @@ public class CitySeason {
 
     private String seasonName;
 
-    // Getters and Setters
+    private int minTemperature;
+
+    private int maxTemperature;
+
+    private double rainProbability;
+
+    private double snowProbability;
+
+    // Getters et Setters
     public Long getId() {
         return id;
     }
@@ -59,5 +67,37 @@ public class CitySeason {
 
     public void setSeasonName(String seasonName) {
         this.seasonName = seasonName;
+    }
+
+    public int getMinTemperature() {
+        return minTemperature;
+    }
+
+    public void setMinTemperature(int minTemperature) {
+        this.minTemperature = minTemperature;
+    }
+
+    public int getMaxTemperature() {
+        return maxTemperature;
+    }
+
+    public void setMaxTemperature(int maxTemperature) {
+        this.maxTemperature = maxTemperature;
+    }
+
+    public double getRainProbability() {
+        return rainProbability;
+    }
+
+    public void setRainProbability(double rainProbability) {
+        this.rainProbability = rainProbability;
+    }
+
+    public double getSnowProbability() {
+        return snowProbability;
+    }
+
+    public void setSnowProbability(double snowProbability) {
+        this.snowProbability = snowProbability;
     }
 }

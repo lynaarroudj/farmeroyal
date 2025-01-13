@@ -6,8 +6,10 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import Services.CitySeasonService;
+import Utils.DateUtils;
 
-import java.util.List;
+
+import java.time.LocalDate;
 
 @Path("city-seasons")
 @Produces(MediaType.APPLICATION_JSON)
@@ -17,19 +19,30 @@ public class CitySeasonRessources {
     @Inject
     private CitySeasonService citySeasonService;
 
-    @GET
-    @Path("{cityName}")
-    public Response getCitySeasonsByCityName(@PathParam("cityName") String cityName) {
-        List<CitySeasonDto> citySeasons = citySeasonService.getCitySeasonsByCityName(cityName);
-        if (citySeasons.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("No data found for city: " + cityName).build();
-        }
-        return Response.ok(citySeasons).build();
+    @POST
+    public Response addCitySeason(CitySeasonDto citySeasonDto) {
+        Long id = citySeasonService.saveCitySeason(citySeasonDto);
+        return Response.status(Response.Status.CREATED).entity("Saison créée avec l'ID : " + id).build();
     }
 
-    @POST
-    public Response addCitySeason(CitySeasonDto citySeasonDTO) {
-        Long id = citySeasonService.saveCitySeason(citySeasonDTO);
-        return Response.status(Response.Status.CREATED).entity("City season created with ID: " + id).build();
+    @GET
+    @Path("{cityName}/weather")
+    public Response getWeatherForCity(@PathParam("cityName") String cityName, @QueryParam("date") String date) {
+        try {
+            // Validation du format de la date
+            if (date == null || !date.matches("\\d{2}/\\d{2}")) {
+                throw new IllegalArgumentException("Le format de la date est invalide. Utilisez le format : dd/MM");
+            }
+
+            // Parsing de la date avec validation
+            LocalDate parsedDate = DateUtils.parseWithDefaultYear(date);
+
+            // Génération des conditions météo
+            String weather = citySeasonService.getWeatherForCity(cityName, parsedDate);
+
+            return Response.ok(weather).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 }
