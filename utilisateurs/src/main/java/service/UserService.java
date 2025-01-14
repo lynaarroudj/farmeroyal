@@ -15,9 +15,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.time.Duration;
-import java.util.Base64;
-import java.util.Set;
+import java.util.Set; 
 import java.util.Date;
 
 import io.jsonwebtoken.security.Keys;
